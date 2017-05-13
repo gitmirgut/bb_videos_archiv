@@ -3,6 +3,8 @@ import os.path
 
 import pytest
 
+import bb_videos_iterator.helpers as helpers
+
 
 # add marker for incremental testing
 # http://doc.pytest.org/en/latest/example/simple.html#incremental-testing-test-steps
@@ -30,9 +32,19 @@ def main_indir():
     return os.path.join(test_dir, 'data', 'in')
 
 
+@pytest.fixture()
+def archiv_2016(main_indir):
+    return os.path.join(main_indir, 'videos_proxy')
+
+
 @pytest.fixture
 def main_outdir():
     out_path = os.path.join(test_dir, 'data', 'out')
     if not os.path.exists(out_path):
         os.makedirs(out_path)
     return out_path
+
+
+@pytest.fixture()
+def config():
+    return helpers.get_default_config()
