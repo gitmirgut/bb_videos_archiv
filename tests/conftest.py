@@ -33,12 +33,12 @@ def main_indir():
 
 
 @pytest.fixture()
-def archiv_2016(main_indir):
+def path_archiv_2016(main_indir):
     return os.path.join(main_indir, 'videos_proxy_2016')
 
 
 @pytest.fixture()
-def archiv_2015(main_indir):
+def path_archiv_2015(main_indir):
     return os.path.join(main_indir, 'videos_proxy_2015')
 
 
