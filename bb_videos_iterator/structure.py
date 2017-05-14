@@ -20,15 +20,17 @@ import bb_binary.parsing as bbb_p
 
 class Directory_Tree_Structure(object):
 
-    def __init__(self, year='2016', root_dir=None, config=None):
+    def __init__(self, year, root_dir=None, config=None):
         if config is None:
             self.config = helpers.get_default_config()
         else:
             self.config = config
+
         if root_dir is not None:
             self.root_dir = root_dir
         else:
             self.root_dir = self.config[year]['ROOT_DIR']
+
         self.valid_cam_ids = ast.literal_eval(self.config[year]['CAM_IDS'])
         self.dir_format = self.config[year]['DIR_FORMAT']
         self.video_ext = self.config[year]['VIDEO_EXT']
