@@ -18,9 +18,18 @@ class Directory_Tree_Structure(object):
         self.dir_format = self.config[year]['DIR_FORMAT']
         self.video_ext = self.config[year]['VIDEO_EXT']
 
-    # TODO(gitmirgut): Noch Lösung überlegen was mit Files um 0 Uhr ist.
-    def _path_for_dt_cam(self, time, cam_id, abs=False):
-        dt = bbb_p.to_datetime(time)
+    def _path_for_dt_cam(self, ts, cam_id, abs=False):
+        """Returns the directory path of videos to the given timestamp.
+        
+        Args:
+            ts (datetime): Timestamp to search for.
+            cam_id (int): Camera id to search for.
+            abs (bool): If *True* returns the absolute path to the directory.
+
+        Returns:
+            string: path of the directory
+        """
+        dt = bbb_p.to_datetime(ts)
         if cam_id not in self.valid_cam_ids:
             raise ValueError("Unknown camera id {cam_id}.".format(cam_id=cam_id))
         format = self.dir_format.format(dt=dt, cam_id=cam_id)
@@ -29,13 +38,23 @@ class Directory_Tree_Structure(object):
         else:
             return format
 
-    def _paths_for_dt_cam(self, time, cam_id=None, abs=False):
+    def _paths_for_dt_cam(self, ts, cam_id=None, abs=False):
+        """Returns the directory paths of videos to the given timestamp.
+        
+        Args:
+            ts (datetime): Timestamp to search for.
+            cam_id (int): Camera id to search for, if None the function search for all cam ids.
+            abs (bool): If *True* returns the absolute path to the directory.
+
+        Returns:
+            list(string): paths of the directories for the given timestamp.
+        """
         paths = []
         if cam_id is None:
             for cam_id in self.valid_cam_ids:
-                paths.append(self._path_for_dt_cam(time, cam_id, abs))
+                paths.append(self._path_for_dt_cam(ts, cam_id, abs))
         else:
-            paths.append(self._path_for_dt_cam(time, cam_id, abs))
+            paths.append(self._path_for_dt_cam(ts, cam_id, abs))
         return paths
 
     def _all_videos_in(self, path):
@@ -56,7 +75,7 @@ class Directory_Tree_Structure(object):
             cam_id (int): camera id to search for.
 
         Returns:
-            list(string): paths of video files
+            list(string): paths of video files.
         """
         # TODO(gitmirgut): Check if 20min is to big and if its also needed for time near 23:59..
         dt = bbb_p.to_datetime(ts)
