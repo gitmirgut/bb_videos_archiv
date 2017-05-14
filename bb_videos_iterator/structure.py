@@ -1,3 +1,15 @@
+#  Licensed under the Apache License, Version 2.0 (the "License"); you may
+#  not use this file except in compliance with the License. You may obtain
+#  a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#  License for the specific language governing permissions and limitations
+#  under the License.
+"""This module contains functions to search for videos of the beesbook project."""
 import ast
 import datetime
 import os
@@ -8,19 +20,22 @@ import bb_binary.parsing as bbb_p
 
 class Directory_Tree_Structure(object):
 
-    def __init__(self, root_dir, year='2016', config=None):
+    def __init__(self, year='2016', root_dir=None, config=None):
         if config is None:
             self.config = helpers.get_default_config()
         else:
             self.config = config
-        self.root_dir = root_dir
+        if root_dir is not None:
+            self.root_dir = root_dir
+        else:
+            self.root_dir = self.config[year]['ROOT_DIR']
         self.valid_cam_ids = ast.literal_eval(self.config[year]['CAM_IDS'])
         self.dir_format = self.config[year]['DIR_FORMAT']
         self.video_ext = self.config[year]['VIDEO_EXT']
 
     def _path_for_dt_cam(self, ts, cam_id, abs=False):
         """Returns the directory path of videos to the given timestamp.
-        
+
         Args:
             ts (datetime): Timestamp to search for.
             cam_id (int): Camera id to search for.
@@ -40,7 +55,7 @@ class Directory_Tree_Structure(object):
 
     def _paths_for_dt_cam(self, ts, cam_id=None, abs=False):
         """Returns the directory paths of videos to the given timestamp.
-        
+
         Args:
             ts (datetime): Timestamp to search for.
             cam_id (int): Camera id to search for, if None the function search for all cam ids.
@@ -63,9 +78,6 @@ class Directory_Tree_Structure(object):
         if not os.path.isdir(path):
             return []
         return [f for f in os.listdir(path) if f.lower().endswith(self.video_ext)]
-
-    def _parse_video_fname(self, fname):
-        pass
 
     def find(self, ts, cam_id=None):
         """Returns all video file paths that belong to the `ts`.
