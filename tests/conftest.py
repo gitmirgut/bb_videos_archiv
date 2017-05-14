@@ -37,6 +37,11 @@ def archiv_2016(main_indir):
     return os.path.join(main_indir, 'videos_proxy_2016')
 
 
+@pytest.fixture()
+def archiv_2015(main_indir):
+    return os.path.join(main_indir, 'videos_proxy_2015')
+
+
 @pytest.fixture
 def main_outdir():
     out_path = os.path.join(test_dir, 'data', 'out')
