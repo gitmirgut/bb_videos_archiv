@@ -96,7 +96,9 @@ def test_find(video_archiv_2015, video_archiv_2016, path_archiv_2015, path_archi
     assert videos == [out]
 
 
-def test_day_change(video_archiv_2016):
+def test_day_change(video_archiv_2016, path_archiv_2016):
     ts = iso8601.parse_date('2016-08-05T00:3')
     videos = video_archiv_2016.find(ts, cam_id=3)
-    print(videos)
+    out = os.path.join(path_archiv_2016, '2016-08-04', 'Cam_3',
+                       'Cam_3_2016-08-04T23:59:39.924786Z--2016-08-05T00:05:19.771866Z.mkv')
+    assert videos == [out]
