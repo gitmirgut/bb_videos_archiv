@@ -42,14 +42,14 @@ def archiv_2015(main_indir):
     return os.path.join(main_indir, 'videos_proxy_2015')
 
 
+@pytest.fixture()
+def config():
+    return helpers.get_default_config()
+
+
 @pytest.fixture
 def main_outdir():
     out_path = os.path.join(test_dir, 'data', 'out')
     if not os.path.exists(out_path):
         os.makedirs(out_path)
     return out_path
-
-
-@pytest.fixture()
-def config():
-    return helpers.get_default_config()
