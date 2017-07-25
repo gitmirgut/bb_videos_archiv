@@ -70,27 +70,27 @@ def test_all_videos_in(video_archiv_2016, path_archiv_2016):
     assert video_archiv_2016._all_videos_in(path) == []
 
 
-def test_find(video_archiv_2015, video_archiv_2016, path_archiv_2015, path_archiv_2016):
+def test_find_by_ts(video_archiv_2015, video_archiv_2016, path_archiv_2015, path_archiv_2016):
     ts = iso8601.parse_date('2016-08-05T00:06')
-    videos = video_archiv_2016.find(ts, cam_id=0)
+    videos = video_archiv_2016.find_by_ts(ts, cam_id=0)
     out = os.path.join(path_archiv_2016, '2016-08-05', 'Cam_0',
                        'Cam_0_2016-08-05T00:04:22.402199Z--2016-08-05T00:10:02.251240Z.mkv')
     assert videos == [out]
     ts = iso8601.parse_date('2016-08-05T00:15')
-    videos = video_archiv_2016.find(ts)
+    videos = video_archiv_2016.find_by_ts(ts)
     assert len(videos) == 4
 
     # notice that the videos of 2015 are in UTC+02:00
     ts = iso8601.parse_date('2015-08-19T22:00:01')
-    videos = video_archiv_2015.find(ts, cam_id=2)
+    videos = video_archiv_2015.find_by_ts(ts, cam_id=2)
     out = os.path.join(path_archiv_2015, '20150819', 'Cam_2',
                        'Cam_2_20150819235309_916748_TO_Cam_2_20150820000822_999973.mkv')
     assert videos == [out]
-    videos = video_archiv_2015.find(ts)
+    videos = video_archiv_2015.find_by_ts(ts)
     assert len(videos) == 4
 
     ts = iso8601.parse_date('2015-08-20T02:00:01')
-    videos = video_archiv_2015.find(ts, cam_id=2)
+    videos = video_archiv_2015.find_by_ts(ts, cam_id=2)
     out = os.path.join(path_archiv_2015, '20150820', 'Cam_2',
                        'Cam_2_20150820034523_186685_TO_Cam_2_20150820040226_280203.mkv')
     assert videos == [out]
@@ -98,7 +98,26 @@ def test_find(video_archiv_2015, video_archiv_2016, path_archiv_2015, path_archi
 
 def test_day_change(video_archiv_2016, path_archiv_2016):
     ts = iso8601.parse_date('2016-08-05T00:3')
-    videos = video_archiv_2016.find(ts, cam_id=3)
+    videos = video_archiv_2016.find_by_ts(ts, cam_id=3)
     out = os.path.join(path_archiv_2016, '2016-08-04', 'Cam_3',
                        'Cam_3_2016-08-04T23:59:39.924786Z--2016-08-05T00:05:19.771866Z.mkv')
     assert videos == [out]
+
+
+def test_get_abs_path_by_name(video_archiv_2015, video_archiv_2016,
+                              path_archiv_2015, path_archiv_2016):
+    video = video_archiv_2016.get_abs_path_by_name(
+        'Cam_3_2016-08-04T23:59:39.924786Z--2016-08-05T00:05:19.771866Z.mkv')
+    out = os.path.join(path_archiv_2016, '2016-08-04', 'Cam_3',
+                       'Cam_3_2016-08-04T23:59:39.924786Z--2016-08-05T00:05:19.771866Z.mkv')
+    assert video == out
+
+    video = video_archiv_2015.get_abs_path_by_name(
+        'Cam_2_20150820034523_186685_TO_Cam_2_20150820040226_280203.mkv')
+    out = os.path.join(path_archiv_2015, '20150820', 'Cam_2',
+                       'Cam_2_20150820034523_186685_TO_Cam_2_20150820040226_280203.mkv')
+    assert video == out
+
+    video = video_archiv_2015.get_abs_path_by_name(
+        'Cam_2_20150820034523_186685_TO_Cam_2_20150820040226_23.mk')
+    assert video is None

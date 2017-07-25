@@ -97,7 +97,7 @@ class Video_Archiv(object):
             return []
         return [f for f in os.listdir(path) if f.lower().endswith(self.video_ext)]
 
-    def find(self, ts, cam_id=None):
+    def find_by_ts(self, ts, cam_id=None):
         """Return all video file paths that belong to the `ts`.
 
         Args:
@@ -124,3 +124,19 @@ class Video_Archiv(object):
                 if begin <= dt < end:
                     video_paths.append(os.path.join(path, fname))
         return video_paths
+
+    def get_abs_path_by_name(self, name):
+        """Return the absolute path of the video.
+
+        Args:
+            name (str): Name of the video.
+
+        Returns: Absolute path of the video if it exists otherwise None.
+        """
+        cam_id, ts_start, __ = bbb_p.parse_video_fname(name)
+        path = self._path_for_dt_cam(ts_start, cam_id, True)
+        file_path = os.path.join(path, name)
+        if os.path.exists(file_path):
+            return file_path
+        else:
+            return None
