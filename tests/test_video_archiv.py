@@ -121,3 +121,25 @@ def test_get_abs_path_by_name(video_archiv_2015, video_archiv_2016,
     video = video_archiv_2015.get_abs_path_by_name(
         'Cam_2_20150820034523_186685_TO_Cam_2_20150820040226_23.mk')
     assert video is None
+
+
+def test_find_closest_videos(video_archiv_2015, video_archiv_2016, path_archiv_2015,
+                             path_archiv_2016):
+    ts = iso8601.parse_date('2015-09-01T04:06')
+    prev, succ = video_archiv_2015.find_closest_videos(ts, 0, abs=False)
+    assert prev == "Cam_0_20150901055504_872230_TO_Cam_0_20150901060045_889735.mkv"
+    assert succ == "Cam_0_20150901060627_574278_TO_Cam_0_20150901061208_591783.mkv"
+
+    prev, succ = video_archiv_2015.find_closest_videos(ts, 0, abs=True)
+    out_dir = os.path.join(path_archiv_2015, '20150901', 'Cam_0')
+    assert prev == os.path.join(out_dir,
+                                "Cam_0_20150901055504_872230_TO_Cam_0_20150901060045_889735.mkv")
+    assert succ == os.path.join(out_dir,
+                                "Cam_0_20150901060627_574278_TO_Cam_0_20150901061208_591783.mkv")
+
+    ts = iso8601.parse_date('2015-08-19T22:00:01')
+    closest = video_archiv_2015.find_closest_videos(ts, 0, abs=True)
+    out_dir = os.path.join(path_archiv_2015, '20150819', 'Cam_0')
+    out = os.path.join(out_dir,
+                       "Cam_0_20150819234428_462922_TO_Cam_0_20150820000131_555440.mkv")
+    assert [out] == closest

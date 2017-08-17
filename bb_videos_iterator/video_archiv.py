@@ -65,6 +65,8 @@ class Video_Archiv(object):
         dt = bbb_p.to_datetime(ts)
         if cam_id not in self.valid_cam_ids:
             raise ValueError("Unknown camera id {cam_id}.".format(cam_id=cam_id))
+        # TODO(gitmirgut) is this possible for videos of 2015? Mabye the day folders are in Berlin
+        # style and not in ISO8601 style
         format = self.dir_format.format(dt=dt, cam_id=cam_id)
         if abs:
             return os.path.join(self.root_dir, format)
@@ -115,6 +117,7 @@ class Video_Archiv(object):
         time_delta = datetime.timedelta(minutes=20)
         shift_time = dt - time_delta
         if shift_time.day != dt.day:
+            # TODO(gitmirgut): Change it to append.
             paths = paths + self._paths_for_dt_cam(shift_time, cam_id, abs=True)
         video_paths = []
         for path in paths:
@@ -123,6 +126,7 @@ class Video_Archiv(object):
             for fname, (camId, begin, end) in fname_parts:
                 if begin <= dt < end:
                     video_paths.append(os.path.join(path, fname))
+                    # TODO(gitmirgut): insert breake
         return video_paths
 
     def get_abs_path_by_name(self, name):
@@ -140,3 +144,54 @@ class Video_Archiv(object):
             return file_path
         else:
             return None
+
+    def find_closest_videos(self, ts, cam_id, abs=False):
+        """Return closest videos to the given timestamp.
+
+        Args:
+            ts (datetime): timestamp to search for.
+            cam_id (int): camera id to search for.
+
+        Returns:
+            list(string): paths of video files.
+        """
+        # TODO(gitmirgut): Check if 20min is to big and if its also needed for time near 23:59..
+        dt = bbb_p.to_datetime(ts)
+
+        paths = [self._path_for_dt_cam(dt, cam_id, abs=True)]
+
+        # check if time is near 0 hour, to get paths from the day before.
+        time_delta = datetime.timedelta(minutes=20)
+        shift_time = dt - time_delta
+        print('time')
+        print(dt)
+        print(shift_time)
+        if shift_time.day != dt.day:
+            paths.append(self._path_for_dt_cam(shift_time, cam_id, abs))
+
+        shift_time = dt + time_delta
+        if shift_time.day != dt.day:
+            paths.append(self._path_for_dt_cam(shift_time, cam_id, abs))
+
+        paths.sort()
+        prev = None
+        succ = None
+        for path in paths:
+            fnames = self._all_videos_in(path)
+            fnames.sort()
+            fnames_parts = [(f, bbb_p.parse_video_fname(f)) for f in fnames]
+            for fname, (camId, begin, end) in fnames_parts:
+                if begin <= ts < end:
+                    ret = fname
+                    if abs:
+                        return [os.path.join(path, ret)]
+                    else:
+                        return ret
+                elif end < ts:
+                    prev = fname
+                elif ts < begin:
+                    succ = fname
+                    if abs:
+                        return [os.path.join(path, prev), os.path.join(path, succ)]
+                    else:
+                        return [prev, succ]
