@@ -1,4 +1,4 @@
-import bb_videos_iterator.helpers as helpers
+import bb_videos_archiv.helpers as helpers
 
 
 def test_get_default_config():

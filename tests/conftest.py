@@ -3,7 +3,7 @@ import os.path
 
 import pytest
 
-import bb_videos_iterator.helpers as helpers
+import bb_videos_archiv.helpers as helpers
 
 
 # add marker for incremental testing

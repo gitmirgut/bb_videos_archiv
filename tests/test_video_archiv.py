@@ -3,7 +3,7 @@ import os
 import iso8601
 import pytest
 
-import bb_videos_iterator.video_archiv as video_archiv
+import bb_videos_archiv.video_archiv as video_archiv
 
 
 @pytest.fixture
@@ -36,13 +36,13 @@ def test_path_for_dt_cam(video_archiv_2015, video_archiv_2016):
     ts = iso8601.parse_date("2016-09-02")
     cam_id = 0
     path_dir = video_archiv_2016._path_for_dt_cam(ts, cam_id, abs=True)
-    assert path_dir == "/home/mrpoin/Beesbook/bb_videos_iterator/tests/data/in/" \
+    assert path_dir == "/home/mrpoin/Beesbook/bb_videos_archiv/tests/data/in/" \
                        "videos_proxy_2016/2016-09-02/Cam_0"
 
     ts = iso8601.parse_date("2015-09-02")
     cam_id = 2
     path_dir = video_archiv_2015._path_for_dt_cam(ts, cam_id, abs=True)
-    assert path_dir == "/home/mrpoin/Beesbook/bb_videos_iterator/tests/data/in/videos_proxy_2015/" \
+    assert path_dir == "/home/mrpoin/Beesbook/bb_videos_archiv/tests/data/in/videos_proxy_2015/" \
                        "20150902/Cam_2"
     bad_cam_id = 666
     with pytest.raises(ValueError):
