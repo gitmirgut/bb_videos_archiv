@@ -3,7 +3,7 @@ import os
 import iso8601
 import pytest
 
-import bb_videos_archiv.video_archiv as video_archiv
+import bb_videos_archiv.core as video_archiv
 
 
 @pytest.fixture
