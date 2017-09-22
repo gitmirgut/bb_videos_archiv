@@ -190,7 +190,7 @@ class Video_Archiv(object):
                     if abs:
                         return [os.path.join(path, ret)]
                     else:
-                        return ret
+                        return [ret]
                 elif end < ts:
                     prev = fname
                 elif ts < begin:
