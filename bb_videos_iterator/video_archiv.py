@@ -148,6 +148,10 @@ class Video_Archiv(object):
     def find_closest_videos(self, ts, cam_id, abs=False):
         """Return closest videos to the given timestamp.
 
+        If the timestamp is contained in a video interval, then the returned list consists only of
+        this video. If the timestamp is outside of video intervals, the list contains two videos,
+        which are around that timestamp.
+
         Args:
             ts (datetime): timestamp to search for.
             cam_id (int): camera id to search for.
